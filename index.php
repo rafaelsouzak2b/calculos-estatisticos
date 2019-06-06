@@ -4,42 +4,57 @@ if(isset($_POST['val'])){
 	$valores = $_POST['val'];
 	$variavel = $_POST['variavel'];
 	$n = $_POST['n'];
+	//colocar os valores em ordem crescente
 	sort($valores);
-//print_r($valores);
+
 	$tabela = [];
+	//agrupa cada valor com sua respectiva quantidade que se repete
 	$lista = array_count_values($valores);
 	$freqacu = 0;
 	$media = 0;
 	$soma = 0;
 	$mediana = 0;
+	//encontra o valor que mais repete
 	$valor_repete = max($lista);
 	$moda = [];
 	foreach($lista as $valor => $vezes) {
 		//echo "$numero - $vezes<br />";
+		//calcula a frequencia relativa e aredonda o valor para duas casas decimais
 		$freqrela = round($vezes * 100 / $n, 2);
+		//acumulador da frequencia acumulada de cada valor
 		$freqacu += $vezes;
+		//adiciona ao vetor tabela a frequencia absoluta, frequencia relatica frequencia acumulada de cada valor
 		array_push($tabela, array("n" => $valor, "freqabs" => $vezes, "freqrela" => $freqrela, "freqacu" => $freqacu));
+		//acumulador de soma ponderada de cada valor
 		$soma += $vezes * $valor;
 
+		//calculo da mediana
 		if($n % 2 == 0){
-			$aux = $n - 2;
-			$grupo = $aux/2;
-			$somaVal = $valores[$grupo] + $valores[$grupo+1];;
+			//calculo caso n for par
+			$grupo = $n/2;
+			$somaVal = $valores[$grupo-1] + $valores[$grupo];;
 			$mediana = $somaVal/2;			
 
 		}else{
+			//calculo caso n for impar
 			$aux = $n - 1;
 			$grupo = $aux/2;
-			$mediana = $valores[$grupo-1];			
+			$mediana = $valores[$grupo];	
+
 		}
 
-		if($vezes == $valor_repete){
-			array_push($moda, $valor);
-		}		
+		//adiciona ao vetor moda os valores que mais se repetem
+		if($valor_repete > 1){
+			if($vezes == $valor_repete){
+				array_push($moda, $valor);
+			}			
+		}
+
+
 
 		
 	}
-
+	//calcula a media ponderada dos valores
 	$media = round($soma / $n, 2);
 
 
@@ -138,14 +153,14 @@ if(isset($_POST['val'])){
 				<div class="col">
 					<label style="font-weight: bold;">Moda: <?php 
 
-					
-					foreach($moda as $v){
-
-						echo $v." ";
-
-
-
+					if(!empty($moda)){
+						foreach($moda as $v){
+							echo $v." ";
+						}						
+					}else{
+						echo "Sem moda";
 					}
+					
 					
 					?></label>
 					
@@ -159,35 +174,37 @@ if(isset($_POST['val'])){
 			</div>
 		</div>
 	<?php } 
-
-//print_r($tabela);
-//echo max($lista); // 5
 	?>
 	<script type="text/javascript" src="assets/js/funcoes.js"></script>
 
 	<script type="text/javascript">
 		google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawChart);
+		google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['N', '<?php echo $variavel;?>'],
-          ['1', 5],
-          ['2', 7],
-        
-        ]);
+		function drawChart() {
+			var data = google.visualization.arrayToDataTable([
+				['N', '<?php echo $variavel;?>'],
+				<?php 
+				foreach ($tabela as $val) {
+					echo "['".$val['n']."', ".$val['freqrela']."],";
+				}
 
-        var options = {
-          chart: {
-            title: 'grafico titulo',
-            subtitle: 'Subtitulo',
-          }
-        };
 
-        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+				?>
 
-        chart.draw(data, google.charts.Bar.convertOptions(options));
-      }
+				]);
+
+			var options = {
+				chart: {
+					title: 'Grafico de <?php echo $variavel;?> em %',
+					subtitle: 'Frequencia Relativa',
+				}
+			};
+
+			var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+			chart.draw(data, google.charts.Bar.convertOptions(options));
+		}
 	</script>
 </body> 
 </html>
