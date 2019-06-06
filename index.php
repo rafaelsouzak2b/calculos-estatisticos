@@ -19,7 +19,7 @@ if(isset($_POST['val'])){
 	$moda = [];
 	foreach($lista as $valor => $vezes) {
 		//echo "$numero - $vezes<br />";
-		//calcula a frequencia relativa e aredonda o valor para duas casas decimais
+		//calcula a frequencia relativa e arredonda o valor para duas casas decimais
 		$freqrela = round($vezes * 100 / $n, 2);
 		//acumulador da frequencia acumulada de cada valor
 		$freqacu += $vezes;
