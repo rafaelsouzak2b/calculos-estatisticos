@@ -14,6 +14,17 @@ if(isset($_POST['val'])){
 	$media = 0;
 	$soma = 0;
 	$mediana = 0;
+	//pega o maior valor digitado
+	$maximo = max($valores);
+	//pega o menor valor digitado
+	$minimo = min($valores);
+	//calcula o ponto médio e arredonda o valor para duas casas decimais
+	$pontoMedio = round(($maximo + $minimo)/2, 2);
+	$amplitude = $maximo - $minimo;
+	$desvioPadrao = 0;
+	//somatorio para o desvio padrão
+	$somatorio = 0;
+	$coefVariacao = 0;
 	//encontra o valor que mais repete
 	$valor_repete = max($lista);
 	$moda = [];
@@ -57,7 +68,14 @@ if(isset($_POST['val'])){
 	//calcula a media ponderada dos valores
 	$media = round($soma / $n, 2);
 
+	//calculando somatório para o desvio padrão
+	foreach($valores as $valor){
+		$somatorio += pow(($valor - $media), 2);
+	}
 
+	$desvioPadrao = round(sqrt($somatorio/($n - 1)), 2);
+
+	$coefVariacao = round(($desvioPadrao / $media) * 100, 2);
 }
 ?>
 
@@ -138,9 +156,19 @@ if(isset($_POST['val'])){
 			</div>
 		</div>
 		<div style="padding: 20px">
+			<div class="row">
+				<div class="col">
+					<label style="font-weight: bold;">Mínimo: <?php echo $minimo;?></label>
+				</div>
+			</div>	
+			<div class="row">
+				<div class="col">
+					<label style="font-weight: bold;">Máximo: <?php echo $maximo;?></label>
+				</div>
+			</div>	
 			<div class="row" >
 				<div class="col">
-					<label style="font-weight: bold;">Media: <?php echo $media;?></label>
+					<label style="font-weight: bold;">Média: <?php echo $media;?></label>
 				</div>
 			</div>
 			<div class="row">
@@ -154,9 +182,24 @@ if(isset($_POST['val'])){
 					<label style="font-weight: bold;">Moda: <?php 
 
 					if(!empty($moda)){
+						//conta a quantidade de elementos dentro do array
+						$qtd = count($moda);
+
+						//retorna o índice maximo do array
+						$indMax = max(array_keys($moda));
+
+						for($i = 0; $i < $qtd; $i++){
+							if($i < $indMax){
+								echo $moda[$i] . ', ';
+							}else{
+								echo $moda[$i];
+							}
+						}
+						/*
 						foreach($moda as $v){
-							echo $v." ";
-						}						
+							echo $v . ' ';
+						}
+						*/						
 					}else{
 						echo "Sem moda";
 					}
@@ -164,6 +207,26 @@ if(isset($_POST['val'])){
 					
 					?></label>
 					
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<label style="font-weight: bold;">Ponto Médio: <?php echo $pontoMedio;?></label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<label style="font-weight: bold;">Amplitude: <?php echo $amplitude;?></label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<label style="font-weight: bold;">Desvio Padrão: <?php echo $desvioPadrao;?></label>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<label style="font-weight: bold;">Coeficiente de Variação: <?php echo $coefVariacao . " %";?></label>
 				</div>
 			</div>			
 		</div>
