@@ -43,7 +43,7 @@ if(isset($_POST['val'])){
 		if($n % 2 == 0){
 			//calculo caso n for par
 			$grupo = $n/2;
-			$somaVal = $valores[$grupo-1] + $valores[$grupo];;
+			$somaVal = $valores[$grupo-1] + $valores[$grupo];
 			$mediana = $somaVal/2;			
 
 		}else{
